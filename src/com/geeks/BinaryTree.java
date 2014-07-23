@@ -5,8 +5,13 @@ import java.util.LinkedList;
 
 public class BinaryTree {
 	public static void main(String[] args) {
-		Character[] inOrder = { 'D', 'B', 'E', 'A', 'F', 'C' };
-		Character[] preOrder = { 'A', 'B', 'D', 'E', 'C', 'F' };
+		// Character[] inOrder = { 'D', 'B', 'E', 'A', 'F', 'C' };
+		// Character[] preOrder = { 'A', 'B', 'D', 'E', 'C', 'F' };
+
+		Character[] preOrder = { 'A', 'B', 'D', 'G', 'E', 'H', 'C', 'F', 'I',
+				'J' };
+		Character[] inOrder = { 'D', 'G', 'B', 'H', 'E', 'A', 'C', 'I', 'F',
+				'J' };
 
 		TreeNode<Character> tree = constructTreeNode(0, preOrder, inOrder);
 
@@ -25,12 +30,20 @@ public class BinaryTree {
 
 		// levelOrderTraverse(tree, printCallback);
 
-		TreeNode<Character> ddl = convertToDoubleLinkedListInPostOrder(tree);
+		// TreeNode<Character> ddl = convertToDoubleLinkedListInPostOrder(tree);
+		//
+		// while (ddl != null) {
+		// System.out.print(ddl.elem);
+		// ddl = ddl.left;
+		// }
 
-		while (ddl != null) {
-			System.out.print(ddl.elem);
-			ddl = ddl.left;
-		}
+		// int height = getHeight(tree);
+
+		// System.out.println(height);
+
+		TreeNode<Character> dummyNode = new TreeNode<Character>();
+		dummyNode.elem = '@';
+		printBinaryTreeHumanReadable(tree, dummyNode);
 
 	}
 
@@ -126,7 +139,19 @@ public class BinaryTree {
 		} while (true);
 	}
 
-	private static <T> void postOrderTraverse(TreeNode<T> tree,
+	public static <T> int getHeight(TreeNode<T> tree) {
+		if (tree == null || (tree.left == null && tree.right == null))
+			return 0;
+
+		int leftHeight = getHeight(tree.left);
+		int rightHeight = getHeight(tree.right);
+
+		int height = leftHeight > rightHeight ? leftHeight : rightHeight;
+
+		return height + 1;
+	}
+
+	public static <T> void postOrderTraverse(TreeNode<T> tree,
 			TraverseCallback<TreeNode<T>> callback) {
 		if (tree.right != null)
 			postOrderTraverse(tree.right, callback);
@@ -189,6 +214,73 @@ public class BinaryTree {
 		tree.left = null;
 
 		return head;
+	}
+
+	public static <T> void printBinaryTreeHumanReadable(TreeNode<T> tree,
+			TreeNode<T> dummyNode) {
+		LinkedList<TreeNode<T>> queue1 = new LinkedList<TreeNode<T>>();
+		LinkedList<TreeNode<T>> queue2 = new LinkedList<TreeNode<T>>();
+
+		int level = 0;
+		int totalHeight = getHeight(tree);
+		boolean firstChildInLevel = false;
+
+		queue1.offer(tree);
+		firstChildInLevel = true;
+		TreeNode<T> tmp = null;
+		int intervalIndent = 0;
+		int leadingIndent = 0;
+
+		do {
+			tmp = queue1.poll();
+
+			if (tmp != null) {
+				if (firstChildInLevel) {
+					intervalIndent = leadingIndent;
+					leadingIndent = (1 << (totalHeight - level)) - 1;
+
+					for (int i = 0; i < leadingIndent; i++) {
+						System.out.print(" ");
+					}
+					firstChildInLevel = false;
+				}
+
+				System.out.print(tmp.elem);
+
+				if (!queue1.isEmpty()) {
+					for (int i = 0; i < intervalIndent; i++) {
+						System.out.print(" ");
+					}
+				}
+
+				if (tmp.left != null)
+					queue2.offer(tmp.left);
+				else if (level != totalHeight) {
+					queue2.offer(dummyNode);
+				}
+
+				if (tmp.right != null)
+					queue2.offer(tmp.right);
+				else if (level != totalHeight) {
+					queue2.offer(dummyNode);
+				}
+			} else {
+				if (!queue2.isEmpty()) {
+					LinkedList<TreeNode<T>> tmpQ = queue1;
+					queue1 = queue2;
+					queue2 = tmpQ;
+
+					firstChildInLevel = true;
+
+					level++;
+
+				} else {
+					break;
+				}
+
+				System.out.println();
+			}
+		} while (true);
 	}
 
 	private static interface TraverseCallback<T> {
