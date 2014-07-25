@@ -1,11 +1,9 @@
 package com.geeks;
 
-public class BinarySearchTree {
-	public static void main(String[] args) {
-		/***********************
-		 * A / \ B C / \ / D E F
-		 */
+import com.geeks.BinaryTree.TreeNode;
 
+public class BinarySearchTree extends BinaryTree {
+	public static void main(String[] args) {
 		TreeNode<Character> tree = null;
 		tree = insertNode(tree, 'A');
 		tree = insertNode(tree, 'B');
@@ -16,23 +14,20 @@ public class BinarySearchTree {
 		tree = insertNode(tree, 'H');
 		tree = insertNode(tree, 'I');
 		tree = insertNode(tree, 'C');
- 
+
 		inOrderTraverse(tree);
 	}
 
-	public static <T extends Comparable<T>> TreeNode<T> insertNode(
+	protected static <T extends Comparable<T>> TreeNode<T> insertNode(
 			TreeNode<T> root, T elem) {
 		if (root == null) {
 			root = new TreeNode<T>();
 			root.elem = elem;
-			root.height = 0;
 		} else {
 			if (elem.compareTo(root.elem) < 0) {
 				root.left = insertNode(root.left, elem);
-				root.height++;
 			} else if (elem.compareTo(root.elem) > 0) {
 				root.right = insertNode(root.right, elem);
-				root.height++;
 			} else {
 				// TODO for same value node, need a counter
 			}
@@ -41,7 +36,7 @@ public class BinarySearchTree {
 		return root;
 	}
 
-	public static <T> void inOrderTraverse(TreeNode<T> tree) {
+	protected static <T> void inOrderTraverse(TreeNode<T> tree) {
 		if (tree == null)
 			return;
 
@@ -52,12 +47,13 @@ public class BinarySearchTree {
 		inOrderTraverse(tree.right);
 	}
 
-	private static class TreeNode<T> {
-		TreeNode<T> left;
-		TreeNode<T> right;
-
-		T elem;
-
-		int height;
+	public static <T> TreeNode<T> convertDDLInPreOrderToBST(TreeNode<T> listHead) {
+		// In place merge
+		return null;
 	}
+
+	public static <T> TreeNode<T> mergeBST(TreeNode<T> tree1, TreeNode<T> tree2) {
+		return null;
+	}
+
 }

@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Heap pollution is a technical term. It refers to references which have a type
+ * @Caveat 2: Heap pollution is a technical term. It refers to references which have a type
  * that is not a supertype of the object they point to.
  * 
  * @author joenjoin

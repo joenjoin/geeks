@@ -4,49 +4,6 @@ import java.util.Arrays;
 import java.util.LinkedList;
 
 public class BinaryTree {
-	public static void main(String[] args) {
-		// Character[] inOrder = { 'D', 'B', 'E', 'A', 'F', 'C' };
-		// Character[] preOrder = { 'A', 'B', 'D', 'E', 'C', 'F' };
-
-		Character[] preOrder = { 'A', 'B', 'D', 'G', 'E', 'H', 'C', 'F', 'I',
-				'J' };
-		Character[] inOrder = { 'D', 'G', 'B', 'H', 'E', 'A', 'C', 'I', 'F',
-				'J' };
-
-		TreeNode<Character> tree = constructTreeNode(0, preOrder, inOrder);
-
-		TraverseCallback<TreeNode<Character>> printCallback = new TraverseCallback<TreeNode<Character>>() {
-
-			@Override
-			public void callback(TreeNode<Character> t) {
-				// if (t == null) {
-				// System.out.println(" ");
-				// } else
-				// System.out.println(t.elem);
-			}
-		};
-
-		// postOrderTraverse(tree, printCallback);
-
-		// levelOrderTraverse(tree, printCallback);
-
-		// TreeNode<Character> ddl = convertToDoubleLinkedListInPostOrder(tree);
-		//
-		// while (ddl != null) {
-		// System.out.print(ddl.elem);
-		// ddl = ddl.left;
-		// }
-
-		// int height = getHeight(tree);
-
-		// System.out.println(height);
-
-		TreeNode<Character> dummyNode = new TreeNode<Character>();
-		dummyNode.elem = '@';
-		printBinaryTreeHumanReadable(tree, dummyNode);
-
-	}
-
 	/**
 	 * Construct a binary tree from preOrder and inOrder sequence
 	 * 
@@ -56,7 +13,7 @@ public class BinaryTree {
 	 * 
 	 * @return
 	 */
-	private static <T> TreeNode<T> constructTreeNode(int rootPos, T[] preOrder,
+	public static <T> TreeNode<T> constructTreeNode(int rootPos, T[] preOrder,
 			T[] inOrder) {
 		if (rootPos == preOrder.length) {
 			return null;
@@ -95,12 +52,31 @@ public class BinaryTree {
 	}
 
 	/**
+	 * Get height of a tree recursively
+	 * 
+	 * @param tree
+	 *            root node
+	 * @return
+	 */
+	public static <T> int getHeight(TreeNode<T> tree) {
+		if (tree == null || (tree.left == null && tree.right == null))
+			return 0;
+
+		int leftHeight = getHeight(tree.left);
+		int rightHeight = getHeight(tree.right);
+
+		int height = leftHeight > rightHeight ? leftHeight : rightHeight;
+
+		return height + 1;
+	}
+
+	/**
 	 * traverse a binary tree in level order
 	 * 
 	 * @param tree
 	 * @param callback
 	 */
-	private static <T> void levelOrderTraverse(TreeNode<T> tree,
+	public static <T> void levelOrderTraverse(TreeNode<T> tree,
 			TraverseCallback<TreeNode<T>> callback) {
 		LinkedList<TreeNode<T>> queue1 = new LinkedList<TreeNode<T>>();
 		LinkedList<TreeNode<T>> queue2 = new LinkedList<TreeNode<T>>();
@@ -121,7 +97,10 @@ public class BinaryTree {
 			}
 
 			TreeNode<T> node = queue1.poll();
-			callback.callback(node);
+
+			if (callback != null) {
+				callback.callback(node);
+			}
 
 			if (node != null)
 				queue2.offer(node.left);
@@ -139,18 +118,6 @@ public class BinaryTree {
 		} while (true);
 	}
 
-	public static <T> int getHeight(TreeNode<T> tree) {
-		if (tree == null || (tree.left == null && tree.right == null))
-			return 0;
-
-		int leftHeight = getHeight(tree.left);
-		int rightHeight = getHeight(tree.right);
-
-		int height = leftHeight > rightHeight ? leftHeight : rightHeight;
-
-		return height + 1;
-	}
-
 	public static <T> void postOrderTraverse(TreeNode<T> tree,
 			TraverseCallback<TreeNode<T>> callback) {
 		if (tree.right != null)
@@ -163,15 +130,68 @@ public class BinaryTree {
 	}
 
 	/**
-	 * Convert binary tree to double linked list
+	 * Using Morris Traversal, we can traverse the tree <strong>without using
+	 * stack and recursion</strong>. The idea of Morris Traversal is based on
+	 * <strong>Threaded Binary Tree</strong>.
+	 * <p>
+	 * In this traversal, we first create links to Inorder successor and print
+	 * the data using these links, and finally revert the changes to restore
+	 * original tree
+	 * </p>
 	 * 
-	 * node left will point to next node; node right will point to parent
+	 * @param tree
+	 *            node root
+	 * @param callback
+	 *            traverse callback
+	 */
+	public static <T> void inOrderMorrisTraverse(TreeNode<T> tree,
+			TraverseCallback<TreeNode<T>> callback) {
+		TreeNode<T> current = tree;
+
+		TreeNode<T> prev;
+
+		while (current != null) {
+			if (current.left == null) {
+				callback.callback(current);
+
+				current = current.right;
+			} else {
+				prev = current.left;
+
+				while (prev.right != null && prev.right != current) {
+					prev = prev.right;
+				}
+
+				if (prev.right == null) {
+					// Found the rightmost node in left tree of current node
+					prev.right = current;
+					current = current.left;
+				} else {
+					// Comes to this condition only because
+					// of prev.right == current
+
+					// Then revert pointers of right mode child node
+					prev.right = null;
+					callback.callback(current);
+
+					current = current.right;
+				}
+			}
+		}
+
+		System.out.println();
+	}
+
+	/**
+	 * Convert binary tree to double linked list in post order
+	 * 
+	 * node left will point to next node; node right will point to previous
 	 * 
 	 * 
 	 * @param tree
 	 * @return
 	 */
-	private static <T> TreeNode<T> convertToDoubleLinkedListInPostOrder(
+	public static <T> TreeNode<T> convertToDoubleLinkedListInPostOrder(
 			TreeNode<T> tree) {
 
 		if (tree == null)
@@ -180,6 +200,8 @@ public class BinaryTree {
 		TreeNode<T> leftList = convertToDoubleLinkedListInPostOrder(tree.left);
 		TreeNode<T> rightList = convertToDoubleLinkedListInPostOrder(tree.right);
 
+		// Following will concatenate 3 linked lists into one
+		// <left list> <right list> <root node>
 		TreeNode<T> head = null;
 		TreeNode<T> node = null;
 
@@ -281,16 +303,18 @@ public class BinaryTree {
 				System.out.println();
 			}
 		} while (true);
+
+		System.out.println();
 	}
 
-	private static interface TraverseCallback<T> {
+	public static interface TraverseCallback<T> {
 		public void callback(T t);
 	}
 
-	private static class TreeNode<T> {
-		TreeNode<T> left;
-		TreeNode<T> right;
+	public static class TreeNode<T> {
+		public TreeNode<T> left;
+		public TreeNode<T> right;
 
-		T elem;
+		public T elem;
 	}
 }
