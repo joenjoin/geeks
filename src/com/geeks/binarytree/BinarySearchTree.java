@@ -1,6 +1,6 @@
-package com.geeks;
+package com.geeks.binarytree;
 
-import com.geeks.BinaryTree.TreeNode;
+import com.geeks.binarytree.BinaryTree.TreeNode;
 
 public class BinarySearchTree extends BinaryTree {
 	public static void main(String[] args) {

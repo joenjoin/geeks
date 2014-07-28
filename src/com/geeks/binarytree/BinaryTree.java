@@ -1,4 +1,4 @@
-package com.geeks;
+package com.geeks.binarytree;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -305,6 +305,17 @@ public class BinaryTree {
 		} while (true);
 
 		System.out.println();
+	}
+
+	/**
+	 * LCA problem (Lowest Common Ancestor) of 2 TreeNode in a tree
+	 * 
+	 * @param node1
+	 * @param node2
+	 */
+	public static <T> void lowestCommonAncestor(TreeNode<T> node1,
+			TreeNode<T> node2) {
+
 	}
 
 	public static interface TraverseCallback<T> {

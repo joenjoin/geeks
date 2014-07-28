@@ -4,9 +4,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.geeks.BinaryTree;
-import com.geeks.BinaryTree.TraverseCallback;
-import com.geeks.BinaryTree.TreeNode;
+import com.geeks.binarytree.BinaryTree;
+import com.geeks.binarytree.BinaryTree.TraverseCallback;
+import com.geeks.binarytree.BinaryTree.TreeNode;
 
 public class TreeOperationsTest {
 	TraverseCallback<TreeNode<Character>> printCallback = new TraverseCallback<TreeNode<Character>>() {
