@@ -52,7 +52,7 @@ public class StringSearch {
 				if (k == 0) {
 					if (pattern[k] == pattern[j]) {
 						overlaps[j] = 1;
-					}
+					} 
 				}
 			}
 
